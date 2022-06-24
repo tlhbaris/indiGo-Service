@@ -1,0 +1,155 @@
+﻿@model indiGo.Core.ViewModels.PageViewModels.AdminWaitingDemandsPageViewModel
+
+<div class="col-lg-8 pb-5 pl-lg-5 offset-lg-2 mt-5">
+    <h3 class="pb-4">Servis Taleplerim</h3>
+    <div class="list-group">
+        @if (Model != null)
+        {
+            @if (Model.ServiceDemands.Count != 0)
+            {
+                @foreach (var demand in Model.ServiceDemands)
+                {
+                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start servicesList" onclick="showModal({id:'@demand.Id',firstName:'@demand.FirstName', lastName: '@demand.LastName', category: '@demand.Category', problem: '@demand.Problem', date: '@demand.CreatedAt.ToShortDateString()', neighborhood: '@demand.Address.Neighborhood', street:'@demand.Address.Street', apartmentNo:'@demand.Address.ApartmentNo', flatNo:'@demand.Address.FlatNo', district:'@demand.Address.District', city: '@demand.Address.City' })">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1"><i class="fa fa-user"></i> @demand.FirstName @demand.LastName</h5>
+                            <small>@demand.CreatedAt.ToShortDateString()</small>
+                        </div>
+                        @if (@demand.Category == "electric")
+                        {
+                            <i class="fa fa-plug text-primary"></i> <span>Elektrik Tesisatı</span>
+                        }
+                        else if (@demand.Category == "gas")
+                        {
+                            <img src="../../fonts/CustomIcons/geyser.svg" style="margin-left: -3px" width="19px" height="19px" class="" /> <span>Doğalgaz Tesisatı</span>
+                        }
+                        else if (@demand.Category == "plumbing")
+                        {
+                            <img src="../../fonts/CustomIcons/water.svg" style="margin-left: -3px" width="18px" height="16px" /> <span>Su Tesisatı</span>
+                        }
+                        <div>
+                            <i class="fa fa-exclamation d-inline" style="margin-left: 2px;margin-right: 2px"></i>
+                            <p class="d-inline">@demand.Problem</p>
+                        </div>
+                        <div>
+                            <svg class="" width="12px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M168.3 499.2C116.1 435 0 279.4 0 192C0 85.96 85.96 0 192 0C298 0 384 85.96 384 192C384 279.4 267 435 215.7 499.2C203.4 514.5 180.6 514.5 168.3 499.2H168.3zM192 256C227.3 256 256 227.3 256 192C256 156.7 227.3 128 192 128C156.7 128 128 156.7 128 192C128 227.3 156.7 256 192 256z" /></svg>
+                            <span> @demand.Address.Neighborhood Mahallesi, @demand.Address.Street Sokağı/Caddesi, No:@demand.Address.ApartmentNo, Daire:@demand.Address.FlatNo, @demand.Address.District/@demand.Address.City </span>
+                        </div>
+
+                    </a>
+                }
+            }
+            else
+            {
+                <p>Onaylanmayan Talep Bulunmamaktadır.</p>
+            }
+        }
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="serviceModal" role="dialog" aria-labelledby="serviceModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Teknik Servis Talep Atama</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="" id="editAddressForm" asp-controller="Operator" asp-action="ServiceDemands">
+                <input id="demandId" name="demandId" type="hidden" />
+                <div class="modal-body">
+                    <div>
+                        <div class="d-flex w-100 justify-content-between" id="namePart">
+                            <h5 id="demandName" class="mb-1"></h5>
+                            <small id="datePart"></small>
+                        </div>
+                    </div>
+                    <div id="info">
+                    </div>
+                    <div class="form-row">
+                        <div id="dropdownPart" class="form-group col-md-6">
+                            <label class="mt-5">Atanacak Teknik Servis</label>
+
+                        </div>
+                        <div id="otherInfo">
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-secondary">Servis Ata</button>
+                </div>
+            </form>
+            <select name="serviceId" id="electricalDropdown" class="custom-select d-none">
+                <option>Teknik Servis Seçiniz.</option>
+                @foreach (var item in Model.ElectricalTechnics)
+                {
+                    <option value="@item.Id">@item.FirstName @item.LastName</option>
+                }
+            </select>
+            <select name="serviceId" id="gasDropdown" class="custom-select d-none">
+                <option>Teknik Servis Seçiniz.</option>
+                @foreach (var item in Model.GasTechnics)
+                {
+                    <option value="@item.Id">@item.FirstName @item.LastName</option>
+                }
+            </select>
+            <select name="serviceId" id="plumbingDropdown" class="custom-select d-none">
+                <option>Teknik Servis Seçiniz.</option>
+                @foreach (var item in Model.PlumbingTechnics)
+                {
+                    <option value="@item.Id">@item.FirstName @item.LastName</option>
+                }
+            </select>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(() => {
+        if ("@TempData["status"]" == "success") {
+            toastr.success("Atama işlemi başarılı");
+        }
+    });
+
+    $('#serviceModal').on('hidden.bs.modal', function (e) {
+        $('#info').empty();
+        $("#electricalDropdown").addClass("d-none").appendTo($(".modal-content"));
+        $("#gasDropdown").addClass("d-none").appendTo($(".modal-content"));
+        $("#plumbingDropdown").addClass("d-none").appendTo($(".modal-content"));
+    })
+    function showModal(parameter) {
+        if ($('#serviceModal').hasClass('show')) {
+            $('#serviceModal').modal('hide');
+        } else {
+            $("#demandName").html(`<i class='fa fa-user'></i> ${parameter.firstName} ${parameter.lastName}`);
+            $("#datePart").html(parameter.date);
+            var icon;
+            var text;
+            if (parameter.category == "electric") {
+                icon = $('<i class="fa fa-plug text-primary"></i>');
+                text = $('<span>Elektrik Tesisatı</span>');
+                $("#electricalDropdown").appendTo($("#dropdownPart")).removeClass("d-none");
+            }else if (parameter.category == "gas") {
+                icon = $('<img src="../../fonts/CustomIcons/geyser.svg" style="margin-left: -3px" width="19px" height="19px" class="" />');
+                text = $('<span>Doğalgaz Tesisatı</span>');
+                $("#gasDropdown").appendTo($("#dropdownPart")).removeClass("d-none");
+            }else if (parameter.category == "plumbing") {
+                icon =  $('<img src="../../fonts/CustomIcons/water.svg" style="margin-left: -3px" width="18px" height="16px" />');
+                text = $('<span>Su Tesisatı</span>');
+                $("#plumbingDropdown").appendTo($("#dropdownPart")).removeClass("d-none");
+            }
+            var problem = $(`<i class="fa fa-exclamation d-inline" style="margin-left: 2px;margin-right: 2px"></i> <p class="d-inline">${parameter.problem}</p>`);
+            var address = $(`<svg class="" width="12px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M168.3 499.2C116.1 435 0 279.4 0 192C0 85.96 85.96 0 192 0C298 0 384 85.96 384 192C384 279.4 267 435 215.7 499.2C203.4 514.5 180.6 514.5 168.3 499.2H168.3zM192 256C227.3 256 256 227.3 256 192C256 156.7 227.3 128 192 128C156.7 128 128 156.7 128 192C128 227.3 156.7 256 192 256z" /></svg>
+                        <span> ${parameter.neighborhood}, ${parameter.street} Sokağı/Caddesi, No:${parameter.apartmentNo}, Daire:${parameter.flatNo}, ${parameter.district}/${parameter.city} </span>`);
+            $("#info").append(icon).append(text).append($('<div>').append(problem)).append($('<div>').append(address));
+            $("#demandId").val(parameter.id);
+
+            $('#serviceModal').modal('show');
+        }
+    }
+</script>

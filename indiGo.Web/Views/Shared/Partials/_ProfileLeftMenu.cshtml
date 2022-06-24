@@ -1,0 +1,62 @@
+﻿@using indiGo.Core.Extensions
+@using indiGo.Core.Identity
+@using Microsoft.AspNetCore.Http;
+@{
+    var userString = Context.Session.GetString("User") == null ? "" : Context.Session.GetString("User");
+
+    var user = new UserViewModel();
+    if (userString != "")
+    {
+        user = System.Text.Json.JsonSerializer.Deserialize<UserViewModel>(userString);
+    }
+
+    var page = ViewContext.RouteData.Values["action"].ToString();
+}
+
+<div class="col-lg-4 pb-5 pr-5" style="border-right: 2px solid #007c77">
+    <!-- Account Sidebar-->
+    <div class="author-card pb-3">
+        <div class="author-card-profile">
+            <div class="author-card-details">
+                <h2 class="author-card-name text-lg">@user.FirstName.CapitalizeFirstLetter() @user.LastName.CapitalizeFirstLetter()</h2>
+                <span class="author-card-position">@user.RegisterDate.ToShortDateString() Tarihinde Katıldı</span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <div class="wizard">
+        <nav class="list-group list-group-flush">
+            <a class="list-group-item @(page == "Profile" ? "active" : "")" asp-controller="Account" asp-action="Profile">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="d-inline-block font-weight-medium text-uppercase">Profil Ayarları</div>
+                    </div>
+                </div>
+            </a>
+            @if (Context.User.IsInRole(Roles.Customer) || Context.User.IsInRole(Roles.Passive))
+            {
+                <a class='list-group-item @(page == "Addresses" ? "active" : "")' asp-controller="Account" asp-action="Addresses">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="d-inline-block font-weight-medium text-uppercase">Adreslerim</div>
+                        </div>
+                    </div>
+                </a>
+                <a class="list-group-item @(page == "MyDemands" ? "active" : "")" asp-controller="Account" asp-action="MyDemands">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="d-inline-block font-weight-medium text-uppercase">Servis Taleplerim</div>
+                        </div>
+                    </div>
+                </a>
+            }
+            <a class='list-group-item @(page == "ChangePassword" ? "active" : "")' asp-controller="Account" asp-action="ChangePassword">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="d-inline-block font-weight-medium text-uppercase">Şifre Değiştir</div>
+                    </div>
+                </div>
+            </a>
+        </nav>
+    </div>
+</div>

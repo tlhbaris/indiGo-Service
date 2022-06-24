@@ -1,4 +1,8 @@
+using indiGo.Business.MappingProfiles;
+using indiGo.Business.Repositories;
+using indiGo.Business.Repositories.Abstract;
 using indiGo.Business.Services.Email;
+using indiGo.Core.Entities;
 using indiGo.Core.Services;
 using indiGo.Data.EntityFramework;
 using indiGo.Data.Identity;
@@ -47,6 +51,22 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
+
+
+builder.Services.AddScoped<IRepository<Address, int>, AddressRepository>();
+builder.Services.AddScoped<IRepository<ServiceDemand, int>, ServiceDemandRepository>();
+builder.Services.AddScoped<IRepository<Product, int>, ProductRepository>();
+builder.Services.AddScoped<IRepository<Receipt, int>, ReceiptRepository>();
+builder.Services.AddScoped<IRepository<ReceiptDetail, int>, ReceiptDetailRepository>();
+
+
+
+builder.Services.AddAutoMapper(options =>
+{
+    options.AddProfile<ViewModelMappingProfile>();
+});
+
+builder.Services.AddSession();
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -63,7 +83,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

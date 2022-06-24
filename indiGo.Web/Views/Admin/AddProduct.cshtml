@@ -1,0 +1,41 @@
+﻿@using indiGo.Core.Categories
+@model ProductViewModel
+
+<div class="col-lg-8 pb-5 pl-lg-5 offset-lg-2 mt-5">
+    <h3 class="pb-4">Ürün Ekle</h3>
+    <form asp-controller="Admin" asp-action="AddProduct" class="form-group">
+        <div class="row">
+            <div class="col-md-4">
+                <label asp-for="Name"></label>
+                <input class="form-control" asp-for="Name"/>
+                <span asp-validation-for="Name" class="text-sm text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Price"></label>
+                <input class="form-control" asp-for="Price" required=""/>
+                <span asp-validation-for="Price" class="text-sm text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Category"></label>
+                <select asp-for="Category" class="form-control">
+                    <option>Lütfen bir kategori seçiniz</option>
+                    <option value="@Categories.Electric">Elektrik</option>
+                    <option value="@Categories.Gas">Doğalgaz</option>
+                    <option value="@Categories.Plumbing">Su Tesisatı</option>
+                </select>
+                <span asp-validation-for="Category" class="text-sm text-danger"></span>
+            </div>
+            
+        </div>
+
+        <button class="btn btn-primary float-right mt-3" type="submit">Ekle</button>
+    </form>
+</div>
+
+<script>
+    $(() => {
+        if ("@TempData["ProductCreated"]" == "success") {
+            toastr.success("Ürün Başarıyla Oluşturuldu.");
+        }
+    })
+</script>

@@ -1,0 +1,101 @@
+﻿<div class="modal fade" id="editModal" role="dialog" aria-labelledby="editModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">New message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="mt-5" id="addressForm" asp-controller="Account" asp-action="Addresses">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="AddressViewModel.AddressName"></label>
+                            <input asp-for="AddressViewModel.AddressName" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="AddressViewModel.City"></label>
+                            <input asp-for="AddressViewModel.City" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="AddressViewModel.District"></label>
+                            <input asp-for="AddressViewModel.District" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="AddressViewModel.Neighborhood"></label>
+                            <input asp-for="AddressViewModel.Neighborhood" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="AddressViewModel.Street"></label>
+                            <input asp-for="AddressViewModel.Street" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="AddressViewModel.ApartmentNo"></label>
+                            <input asp-for="AddressViewModel.ApartmentNo" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="AddressViewModel.FlatNo"></label>
+                            <input asp-for="AddressViewModel.FlatNo" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AddressViewModel.AddressInfo"></label>
+                        <input asp-for="AddressViewModel.AddressInfo" class="form-control" minlength="5">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Adresi Kaydet</button>
+                </form>
+                <!--<form class="mt-5" id="addressForm" asp-controller="Account" asp-for="Edit">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label id="AddressName"></label>
+                <input name="AddressName" id="AddressName" class="form-control" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label id="City"></label>
+                <input name="City" id="City" class="form-control" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label id="District"></label>
+                <input name="District" id="District" class="form-control" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label id="Neighborhood"></label>
+                <input name="Neighborhood" id="Neighborhood" class="form-control" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label id="Street"></label>
+                <input name="Street" id="Street" class="form-control" required>
+            </div>
+            <div class="form-group col-md-3">
+                <label id="ApartmentNo"></label>
+                <input name="ApartmentNo" id="ApartmentNo" class="form-control" required>
+            </div>
+            <div class="form-group col-md-3">
+                <label id="FlatNo"></label>
+                <input name="FlatNo" id="FlatNo" class="form-control" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label id="AddressInfo"></label>
+            <input name="AddressInfo" id="AddressInfo" class="form-control" minlength="5">
+        </div>
+        <button type="submit" class="btn btn-primary">Adresi Kaydet</button>
+    </form>-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send message</button>
+            </div>
+        </div>
+    </div>
+</div>
+

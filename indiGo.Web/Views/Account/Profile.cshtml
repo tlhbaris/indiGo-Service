@@ -1,0 +1,56 @@
+﻿@model UserViewModel
+
+<div style="padding-bottom: 13%">
+    <div class="container mt-5 pt-5">
+        <div class="row">
+            <partial name="Partials/_ProfileLeftMenu" />
+            <!-- Profile Settings-->
+            <div class="col-lg-8 pb-5 pl-5">
+                <h3 class="pb-4">Profilim</h3>
+                <form class="row" asp-controller="Account" asp-action="Profile">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="FirstName"></label>
+                            <input class="form-control" asp-for="FirstName" required="">
+                        </div>
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="LastName"></label>
+                            <input class="form-control" asp-for="LastName">
+                        </div>
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Email"></label>
+                            <input class="form-control" asp-for="Email" readonly="readonly">
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber"></label>
+                            <input class="form-control" asp-for="PhoneNumber">
+                        </div>
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="col-12">
+                        <hr class="mt-2 mb-3">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center">
+                            <button class="btn btn-style-1 btn-primary" type="submit" >Profili Güncelle</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    if ("@TempData["status"]" == "success") {
+        toastr.success("Profil başarıyla güncellendi.");
+    }
+</script>

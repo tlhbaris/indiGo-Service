@@ -2,17 +2,26 @@
 {
     public static class Roles
     {
-        public static readonly string Admin = "admin";
-        public static readonly string Operator = "operator";
-        public static readonly string Service = "service";
-        public static readonly string Customer = "customer";
-        public static readonly string Passive = "passive";
+        public static readonly string Admin = "ADMIN";
+        public static readonly string Operator = "OPERATOR";
+        public static readonly string Customer = "CUSTOMER";
+        public static readonly string Passive = "PASSIVE";
+        public static readonly string ElectricalService = "ELECTRICALSERVICE";
+        public static readonly string GasService = "GASSERVICE";
+        public static readonly string PlumbingService = "PLUMBINGSERVICE";
+
+
 
         public static readonly List<string> RoleList = new()
         {
-            Admin,Operator,Service,Customer,Passive
+            Admin,
+            Operator,
+            ElectricalService,
+            GasService,
+            PlumbingService,
+            Customer,
+            Passive
         };
 
     }
 }
- 

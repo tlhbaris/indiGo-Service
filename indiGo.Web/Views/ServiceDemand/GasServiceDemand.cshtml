@@ -1,0 +1,56 @@
+﻿@model ServiceDemandPageViewModel
+
+<div class="container my-5" style="min-height: 52vh">
+    <div class="">
+        <h6 class="text-secondary font-weight-semi-bold text-uppercase mb-3">Talep Oluştur</h6>
+        <h1 class="mb-4 section-title section-title">Doğazgaz Tesisatı Servis Talebi</h1>
+    </div>
+    <form class="form-group" asp-controller="ServiceDemand" asp-action="GasServiceDemand">
+        <div class="modal-body">
+            <div class="form-row mb-2">
+                <div class="form-group col-md-6">
+                    <label asp-for="ServiceDemand.FirstName"></label>
+                    <input asp-for="ServiceDemand.FirstName" class="form-control" required>
+                    <span asp-validation-for="ServiceDemand.FirstName" class="text-danger text-sm"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="ServiceDemand.LastName"></label>
+                    <input asp-for="ServiceDemand.LastName" class="form-control" required>
+                    <span asp-validation-for="ServiceDemand.LastName" class="text-danger text-sm"></span>
+                </div>
+            </div>
+            <div class="form-row mb-2">
+                <div class="form-group col-md-6">
+                    <label asp-for="ServiceDemand.TCKN"></label>
+                    <input asp-for="ServiceDemand.TCKN" class="form-control" required>
+                    <span asp-validation-for="ServiceDemand.TCKN" class="text-danger text-sm"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="ServiceDemand.AddressId"></label>
+                    <select class="custom-select" asp-for="ServiceDemand.AddressId" asp-items="@Model.Addresses">
+                        <option>Adres seçiniz.</option>
+                    </select>
+                    <span asp-validation-for="ServiceDemand.AddressId" class="text-danger text-sm"></span>
+                    <span class="small">Yeni adres eklemek için <a asp-controller="Account" asp-action="Addresses" class="text-primary" style="cursor: pointer">buraya tıklayabilirsiniz.</a></span>
+                </div>
+            </div>
+            <div class="form-row mb-2">
+                <div class="form-group col-md-6">
+                    <label asp-for="ServiceDemand.Problem"></label>
+                    <input asp-for="ServiceDemand.Problem" class="form-control" required>
+                    <span asp-validation-for="ServiceDemand.Problem" class="text-danger text-sm"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="ServiceDemand.PhoneNumber"></label>
+                    <input asp-for="ServiceDemand.PhoneNumber" class="form-control">
+                    <span asp-validation-for="ServiceDemand.PhoneNumber" class="text-danger text-sm"></span>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="float-right">
+            <button type="submit" class="btn btn-secondary">Talep Oluştur</button>
+        </div>
+    </form>
+</div>

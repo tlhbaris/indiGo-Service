@@ -1,0 +1,110 @@
+﻿@using indiGo.Core.Categories
+@model indiGo.Core.ViewModels.PageViewModels.ProductPageViewModel
+
+<div class="col-lg-8 pb-5 pl-lg-5 offset-lg-2 mt-5">
+    <h3 class="pb-4">Ürünler</h3>
+    <ul class="list-group">
+        @foreach (var product in Model.Products)
+        {
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between">
+                    <div class="row w-100">
+                        <span class="col-2">@product.Name</span>
+                        <span class="col-2">@product.Price ₺</span>
+                        @if (product.Category == Categories.Electric)
+                        {
+                            <span class="col-2">Elektrik</span>
+                        }else if (product.Category == Categories.Gas)
+                        {
+                            <span class="col-2">Doğalgaz</span>
+                        }else if (product.Category == Categories.Plumbing)
+                        {
+                            <span class="col-2">Su Tesisatı</span>
+                        }
+                    </div>
+                    <div class="d-flex">
+                        <button class="btn btn-sm btn-secondary editBtn" data-id='{"id": "@product.Id", "name": "@product.Name", "price": "@product.Price" }'><i class="fa fa-pen"></i></button>
+                        <button class="btn btn-sm btn-primary ml-2 deleteBtn" data-id="@product.Id"><i class="fa fa-trash"></i></button>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+<div class='modal fade' id="editModal" role="dialog" aria-labelledby="editModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Adres Güncelle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="" id="editProductForm" asp-controller="Admin" asp-action="UpdateProduct">
+                <div class="modal-body">
+                    <div class="row">
+                        <input asp-for="Product.Id" type="hidden"/>
+                        <div class="col-6">
+                            <label asp-for="Product.Name"></label>
+                            <input asp-for="Product.Name" class="form-control"/>
+                            <span asp-validation-for="Product.Name" class="text-danger text-sm"></span>
+                        </div>
+                        <div class="col-6">
+                            <label asp-for="Product.Price"></label>
+                            <input asp-for="Product.Price" class="form-control"/>
+                            <span asp-validation-for="Product.Price" class="text-danger text-sm"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">İptal</button>
+                    <button id="editProductBtn" type="submit" class="btn btn-secondary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(() => {
+        if ("@TempData["ProductDeleted"]" == "success") {
+            toastr.success("Ürün Silindi.");
+        }
+        if ("@TempData["ProductUpdated"]" == "success") {
+            toastr.success("Ürün Güncellendi.");
+        }
+    });
+
+
+    $(".deleteBtn").on("click",
+        function(){
+            Swal.fire({
+                title: 'Bu ürünü silmek istediğinize emin misiniz?',
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#007c77',
+                cancelButtonColor: '#ffc600',
+                confirmButtonText: 'Eminim',
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+                    window.location.href = `/Admin/DeleteProduct/${id}`;
+                }
+            });
+        });
+
+    $(".editBtn").on("click",
+        function() {
+            var data = $(this).attr("data-id");
+            data = JSON.parse(data);
+            $("#Product_Id").val(data.id);
+            $("#Product_Name").val(data.name);
+            $("#Product_Price").val(data.price);
+            $("#editModal").modal('toggle');
+        });
+
+
+</script>

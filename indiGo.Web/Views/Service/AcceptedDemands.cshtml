@@ -1,0 +1,257 @@
+﻿@model indiGo.Core.ViewModels.PageViewModels.AcceptedDemandsPageViewModel
+
+<div class="col-lg-8 pb-5 pl-lg-5 offset-lg-2 mt-5">
+    <h3 class="pb-4">Kabul Edilen İşler</h3>
+    <div class="list-group">
+        @if (Model != null)
+        {
+            @if (Model.ServiceDemands.Count != 0)
+            {
+                @foreach (var demand in Model.ServiceDemands)
+                {
+                    <div class="list-group-item list-group-item-action flex-column align-items-start servicesList">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1"><i class="fa fa-user"></i> @demand.FirstName @demand.LastName</h5>
+                            <small>@demand.CreatedAt.ToShortDateString()</small>
+                        </div>
+                        @if (@demand.Category == "electric")
+                        {
+                            <i class="fa fa-plug text-primary"></i>
+                            <span>Elektrik Tesisatı</span>
+                        }
+                        else if (@demand.Category == "gas")
+                        {
+                            <img src="../../fonts/CustomIcons/geyser.svg" style="margin-left: -3px" width="19px" height="19px" class="" />
+                            <span>Doğalgaz Tesisatı</span>
+                        }
+                        else if (@demand.Category == "plumbing")
+                        {
+                            <img src="../../fonts/CustomIcons/water.svg" style="margin-left: -3px" width="18px" height="16px" />
+                            <span>Su Tesisatı</span>
+                        }
+                        <div>
+                            <i class="fa fa-exclamation d-inline" style="margin-left: 2px; margin-right: 2px"></i>
+                            <p class="d-inline">@demand.Problem</p>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <svg class="" width="12px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M168.3 499.2C116.1 435 0 279.4 0 192C0 85.96 85.96 0 192 0C298 0 384 85.96 384 192C384 279.4 267 435 215.7 499.2C203.4 514.5 180.6 514.5 168.3 499.2H168.3zM192 256C227.3 256 256 227.3 256 192C256 156.7 227.3 128 192 128C156.7 128 128 156.7 128 192C128 227.3 156.7 256 192 256z" /></svg>
+                                <span> @demand.Address.Neighborhood Mahallesi, @demand.Address.Street Sokağı/Caddesi, No:@demand.Address.ApartmentNo, Daire:@demand.Address.FlatNo, @demand.Address.District/@demand.Address.City </span>
+                            </div>
+                            <button data-id="@demand.Id" class="btn btn-sm btn-primary completeJob">
+                                İşi Tamamla
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                }
+            }
+            else
+            {
+                <p>Kabul Edilen İş Bulunmamaktadır.</p>
+            }
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="serviceModal" role="dialog" aria-labelledby="serviceModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Yapılan İşlemleri ve Tutarlarını Giriniz.</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body px-3">
+                <div class="form-row">
+                    <div class="form-group col-md-6 mr-3" style="margin-bottom: 0 !important;">
+                        <label>İş Kalemi</label>
+                    </div>
+                    <div class="form-group col-sm-3 " style="margin-bottom: 0 !important;">
+                        <label>Adet</label>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between" style="align-items: first baseline!important">
+                    <select class="form-group custom-select col-md-6 mr-2 productSelect">
+                        <option>Lütfen bir ürün seçiniz</option>
+                        @foreach (var product in Model.Products)
+                        {
+                            <option value="@product.Id" data-price="@product.Price">@product.Name</option>
+                        }
+                    </select>
+                    <input type="number" id="quantity" class="form-control col-sm-3 mr-2" placeholder="Adet" />
+                    <div class="form-group">
+                        <input id="addEntry" type="button" class="btn btn-sm btn-primary" value="Ekle" />
+                    </div>
+                </div>
+                <div id="listContainer">
+                    <h4 class="mt-3">Yapılan İşler</h4>
+                    <p id="info">Herhangi ürün eklenmedi.</p>
+                    <table id="productTable" class="table d-none">
+                        <thead>
+                            <tr>
+                                <th scope="col">Ürün</th>
+                                <th scope="col">Adet</th>
+                                <th scope="col">Birim Fiyat</th>
+                                <th scope="col">Toplam Fiyat</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="entryList">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal">İptal</button>
+                <button class="btn btn-secondary" id="sendProducts">Yapılan işleri gönder</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var receipt = {demandId:"",products:[]};
+
+    $(() => {
+        if ("@TempData["ReceiptCreated"]" == "success") {
+            toastr.success("Fatura gönderildi.");
+        }
+    });
+
+    $(".completeJob").on("click",
+        function() {
+            Swal.fire({
+                title: 'Bu işi tamamladınız mı?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#007c77',
+                cancelButtonColor: '#ffc600',
+                confirmButtonText: 'Tamamladım',
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    receipt.demandId = $(this).attr("data-id");
+                    $("#serviceModal").modal('toggle');
+                    console.log(receipt);
+                }
+            });
+        });
+
+    $("#addEntry").on("click",
+        () => {
+            if ($("#entryList td").length == 0) {
+                $("#productTable").removeClass("d-none");
+            }
+            var product = $(".productSelect option:selected").text();
+            var productId = $(".productSelect").val();
+            var price = $(".productSelect option:selected").attr("data-price");
+            var quantity = $("#quantity").val();
+            var list = $("#entryList");
+            var exists = false;
+
+            if (product && quantity) {
+
+
+                list.children().each(function() {
+                    if (productId == $(this).attr("data-id")){
+                        $($(this).children()[1]).text(parseFloat($($(this).children()[1]).text()) + parseFloat(quantity));
+                        $($(this).children()[3]).text(parseFloat($($(this).children()[3]).text()) + parseFloat(quantity)*parseFloat(price) + "₺" );
+                        exists = true;
+
+                        var index = receipt.products.findIndex(x => x.id == productId);
+                        console.log("index",index);
+                        console.log("receipt",receipt);
+                        receipt.products[index].quantity += parseFloat(quantity);
+                        console.log("aa",receipt);
+                        return;
+                        }
+                });
+
+                if (!exists) {
+                    receipt.products.push({id:productId,quantity:parseFloat(quantity)});
+
+                    var listItem = $(`<tr data-id="${productId}"><td>${product}</td><td>${quantity}</td><td>${price}₺</td><td>${parseFloat(price)*parseFloat(quantity)}₺</td><td class="row"><i style="cursor:pointer" class="fa fa-trash text-danger text-sm deleteProduct"></i></td></tr>`);
+
+                    $("#info").text('');
+                    list.append(listItem);
+
+                    $(".deleteProduct").on("click",
+                        function() {
+                            Swal.fire({
+                                title: 'Bu ürünü silmek istediğinize emin misiniz?',
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonColor: '#007c77',
+                                cancelButtonColor: '#ffc600',
+                                confirmButtonText: 'Evet',
+                                cancelButtonText: "İptal"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    $(this).parent().parent().remove();
+                                    receipt.products = receipt.products.filter(x => x.id != $(this).parent().parent().attr("data-id"));
+                                    console.log(receipt);
+
+                                    if($("#entryList td").length == 0) {
+                                        $("#productTable").addClass("d-none");
+                                        $("#info").text('Herhangi bir ürün eklenmedi.');
+                                    }
+                                }
+                            });
+                        });
+                }
+
+                $(".productSelect").val("Lütfen bir ürün seçiniz");
+                $("#quantity").val("");
+            }
+        });
+
+    $("#serviceModal").on("hidden.bs.modal", function () {
+        $("#entryList").html("");
+        $("#productTable").addClass("d-none");
+        $("#info").text('Herhangi bir ürün eklenmedi.');
+        receipt.products = [];
+    });
+
+    
+    $("#sendProducts").on("click",
+        function() {
+            console.log("tıklandı");
+            $.ajax({
+                type: 'POST',
+                data: receipt,
+                url: '/Service/AcceptedDemands',
+                //contentType: 'application/json',
+                //dataType: 'json',
+                success: () => {
+                    var timerInterval;
+                    Swal.fire({
+                        title: 'Fatura başarıyla gönderildi!',
+                        icon: "success",
+                        html: 'Bu pencere <b></b> saniye içerisinde kapanacak.',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading()
+                            var b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                                    b.textContent = Swal.getTimerLeft() / 1000;
+                                },
+                                100);
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval);
+                        }
+                    }).then(() => {
+                        location.reload();
+                    });
+                }
+            });
+        });
+
+</script>
+

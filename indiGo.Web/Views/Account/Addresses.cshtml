@@ -1,0 +1,589 @@
+﻿@model AddressPageViewModel
+
+<div style="padding-bottom: 13%">
+    <div class="container mt-5 pt-5">
+        <div class="row">
+            <partial name="Partials/_ProfileLeftMenu" />
+            <div id="contain" class="col-lg-8 pb-5 pl-md-5">
+                <h3 class="pb-4">Adreslerim</h3>
+                @if (Model.Addresses != null)
+                {
+                    <ul class="list-group" id="addressList">
+                        @foreach (var item in Model.Addresses)
+                        {
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>@item.AddressName</strong>
+                                <div>
+                                    <a class="mr-3 text-secondary" onclick="showModal({id:'@item.Id',addressName: '@item.AddressName',city : '@item.City',district: '@item.District',neighborhood:'@item.Neighborhood', street: '@item.Street', apartmentNo: '@item.ApartmentNo',flatNo: '@item.FlatNo',addressInfo: '@item.AddressInfo'})" href="#">
+                                        <i class="fa fa-pen"></i>
+                                    </a>
+                                    <form style="cursor: pointer" class="d-inline" asp-controller="Account" asp-action="DeleteAddresses">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <a class="text-primary deleteBtn">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </form>
+
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                <button id="addNewAddress" class="btn btn-primary mt-3">Yeni Adres Ekle</button>
+
+
+                <div id="mapContainer" style="display: none">
+                    <div id="map" class="mt-5" style="height: 490px"></div>
+                    <button id="goOn" class="btn btn-secondary mt-4">Devam Et</button>
+                </div>
+                <form style="display: none" class="mt-5" id="addressForm" asp-controller="Account" asp-action="Addresses">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="AddressViewModel.AddressName"></label>
+                            <input asp-for="AddressViewModel.AddressName" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="AddressViewModel.City"></label>
+                            <input asp-for="AddressViewModel.City" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="AddressViewModel.District"></label>
+                            <input asp-for="AddressViewModel.District" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="AddressViewModel.Neighborhood"></label>
+                            <input asp-for="AddressViewModel.Neighborhood" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="AddressViewModel.Street"></label>
+                            <input asp-for="AddressViewModel.Street" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="AddressViewModel.ApartmentNo"></label>
+                            <input asp-for="AddressViewModel.ApartmentNo" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="AddressViewModel.FlatNo"></label>
+                            <input asp-for="AddressViewModel.FlatNo" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AddressViewModel.AddressInfo"></label>
+                        <input asp-for="AddressViewModel.AddressInfo" class="form-control" minlength="5">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Adresi Kaydet</button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editModal" role="dialog" aria-labelledby="editModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Adres Güncelle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="" id="editAddressForm" asp-controller="Account" asp-action="Addresses">
+                <div class="modal-body">
+                    <input type="hidden" asp-for="EditAddressViewModel.Id" />
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="EditAddressViewModel.AddressName"></label>
+                            <input asp-for="EditAddressViewModel.AddressName" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="EditAddressViewModel.City"></label>
+                            <input asp-for="EditAddressViewModel.City" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="EditAddressViewModel.District"></label>
+                            <input asp-for="EditAddressViewModel.District" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="EditAddressViewModel.Neighborhood"></label>
+                            <input asp-for="EditAddressViewModel.Neighborhood" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="EditAddressViewModel.Street"></label>
+                            <input asp-for="EditAddressViewModel.Street" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="EditAddressViewModel.ApartmentNo"></label>
+                            <input asp-for="EditAddressViewModel.ApartmentNo" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="EditAddressViewModel.FlatNo"></label>
+                            <input asp-for="EditAddressViewModel.FlatNo" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="EditAddressViewModel.AddressInfo"></label>
+                        <input asp-for="EditAddressViewModel.AddressInfo" class="form-control" minlength="5">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">İptal</button>
+                    <button id="editBtn" type="button" class="btn btn-secondary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfeEBTrdjJ-DA80aVIBhpMLjvkGWyS6P0&callback=initMap&v=weekly"
+        defer></script>
+
+<script>
+    var map;
+    var marker;
+    var geocoder;
+
+    $(() => {
+        if ("@TempData["status"]" == "success") {
+            toastr.success("Adres güncelleme başarılı");
+        }
+    });
+
+    function initMap() {
+
+        map = new google.maps.Map(document.getElementById("map"),
+            {
+                center: { lat: -34.397, lng: 150.644 },
+                zoom: 8,
+                styles
+            });
+        geocoder = new google.maps.Geocoder();
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    var pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+
+                    map.setCenter(pos);
+                    map.setZoom(18);
+                }
+            );
+        }
+
+        google.maps.event.addListener(map,
+            'click',
+            e => {
+                getAddress(e.latLng);
+            });
+    }
+
+    function placeMarker(location) {
+        if (marker) {
+            marker.setMap(null);
+        }
+        marker = new google.maps.Marker({
+            position: location,
+            map: map
+        });
+    }
+
+    function getAddress(location) {
+        geocoder.geocode({ 'latLng': location },
+            (res, status) => {
+                if (status == "OK" && res[0].address_components.length > 5) {
+                    placeMarker(location);
+                    $("#AddressViewModel_ApartmentNo").val(res[0].address_components[0].long_name);
+                    $("#AddressViewModel_Street").val(res[0].address_components[1].long_name);
+                    $("#AddressViewModel_Neighborhood").val(res[0].address_components[2].long_name);
+                    $("#AddressViewModel_District").val(res[0].address_components[3].long_name);
+                    $("#AddressViewModel_City").val(res[0].address_components[4].long_name);
+
+                }
+            });
+    }
+
+    $("#addNewAddress").on("click",
+        () => {
+            if ($("#addNewAddress").text() == "Yeni Adres Ekle") {
+                $("#addNewAddress").addClass("mt-4 ml-2").appendTo($("#mapContainer"));
+                $("#addressList").fadeOut();
+                setTimeout(() => {
+                    $("#mapContainer").fadeIn();
+                },500);
+                $("#addNewAddress").text("İptal Et")
+            } else {
+                $("#mapContainer").fadeOut();
+                setTimeout(() => {
+                        $("#addressList").fadeIn();
+                        $("#addNewAddress").text("Yeni Adres Ekle")
+                        $("#addNewAddress").removeClass("mt-4 ml-2").appendTo($("#contain"));
+                    },
+                    400);
+
+            }
+        });
+
+    $("#goOn").on("click",
+        () => {
+            if (marker) {
+                Swal.fire({
+                    title: 'Konum bilgisini onaylıyor musunuz?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#007c77',
+                    cancelButtonColor: '#ffc600',
+                    confirmButtonText: 'Onaylıyorum',
+                    cancelButtonText: "İptal"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $("#mapContainer").fadeOut();
+                        setTimeout(() => {
+                                $("#addressForm").fadeIn();
+                            },
+                            400);
+
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hata',
+                    text: 'Devam etmek için konum seçmelisiniz.'
+                });
+            }
+
+        });
+
+
+    function showModal(address) {
+        if ($('#editModal').hasClass('show')) {
+            $('#editModal').modal('hide');
+        } else {
+            $("#EditAddressViewModel_AddressName").val(address.addressName);
+            $("#EditAddressViewModel_ApartmentNo").val(address.apartmentNo);
+            $("#EditAddressViewModel_Street").val(address.street);
+            $("#EditAddressViewModel_Neighborhood").val(address.neighborhood);
+            $("#EditAddressViewModel_District").val(address.district);
+            $("#EditAddressViewModel_City").val(address.city);
+            $("#EditAddressViewModel_FlatNo").val(address.flatNo);
+            $("#EditAddressViewModel_AddressInfo").val(address.addressInfo);
+            $("#EditAddressViewModel_Id").val(address.id);
+
+            $('#editModal').modal('show');
+        }
+
+        //var template = $("#mp_template").html();
+    }
+
+    $(".deleteBtn").on("click",
+        (e) => {
+            Swal.fire({
+                title: 'Bu adresi silmek istediğinize emin misiniz?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#007c77',
+                cancelButtonColor: '#ffc600',
+                confirmButtonText: 'Onaylıyorum',
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(e.target).parent().parent().submit();
+                }
+            });
+        });
+
+    function deleteAddress(id) {
+        Swal.fire({
+            title: 'Bu adresi silmek istediğinize emin misiniz?',
+            icon: 'alert',
+            showCancelButton: true,
+            confirmButtonColor: '#007c77',
+            cancelButtonColor: '#ffc600',
+            confirmButtonText: 'Onaylıyorum',
+            cancelButtonText: "İptal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $("#mapContainer").fadeOut();
+                setTimeout(() => {
+                        $("#addressForm").fadeIn();
+                    },
+                    400);
+
+            }
+        });
+    }
+
+    $("#editBtn").on("click",() => {
+        $("#editAddressForm").submit();
+    });
+
+    var styles = [
+        {
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#ebe3cd"
+                }
+            ]
+        },
+        {
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#523735"
+                }
+            ]
+        },
+        {
+            "elementType": "labels.text.stroke",
+            "stylers": [
+                {
+                    "color": "#f5f1e6"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative",
+            "elementType": "geometry.stroke",
+            "stylers": [
+                {
+                    "color": "#c9b2a6"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative.land_parcel",
+            "elementType": "geometry.stroke",
+            "stylers": [
+                {
+                    "color": "#dcd2be"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative.land_parcel",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#ae9e90"
+                }
+            ]
+        },
+        {
+            "featureType": "landscape.natural",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#dfd2ae"
+                }
+            ]
+        },
+        {
+            "featureType": "poi",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#dfd2ae"
+                }
+            ]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#93817c"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "geometry.fill",
+            "stylers": [
+                {
+                    "color": "#a5b076"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#447530"
+                }
+            ]
+        },
+        {
+            "featureType": "road",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#f5f1e6"
+                }
+            ]
+        },
+        {
+            "featureType": "road",
+            "elementType": "labels.icon",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "road.arterial",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#fdfcf8"
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#f8c967"
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry.stroke",
+            "stylers": [
+                {
+                    "color": "#e9bc62"
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway.controlled_access",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#e98d58"
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway.controlled_access",
+            "elementType": "geometry.stroke",
+            "stylers": [
+                {
+                    "color": "#db8555"
+                }
+            ]
+        },
+        {
+            "featureType": "road.local",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#806b63"
+                }
+            ]
+        },
+        {
+            "featureType": "transit",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "transit.line",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#dfd2ae"
+                }
+            ]
+        },
+        {
+            "featureType": "transit.line",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#8f7d77"
+                }
+            ]
+        },
+        {
+            "featureType": "transit.line",
+            "elementType": "labels.text.stroke",
+            "stylers": [
+                {
+                    "color": "#ebe3cd"
+                }
+            ]
+        },
+        {
+            "featureType": "transit.station",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#dfd2ae"
+                }
+            ]
+        },
+        {
+            "featureType": "water",
+            "elementType": "geometry.fill",
+            "stylers": [
+                {
+                    "color": "#b9d3c2"
+                }
+            ]
+        },
+        {
+            "featureType": "water",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#92998d"
+                }
+            ]
+        }
+    ];
+</script>
+
+

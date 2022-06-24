@@ -1,0 +1,129 @@
+﻿@model ServicesViewModel
+
+<div class="col-lg-8 pb-5 pl-lg-5 offset-lg-2 mt-5">
+    <div class="d-flex justify-content-between">
+        <h3 class="pb-4">Teknik Servisler</h3>
+        <div>
+            <div id="electric" class="btn btn-primary btn-sm nav-item active">
+                <a class="nav-link p-0" style="color: black">Elektrik</a>
+            </div>
+            <div id="plumbing" class="btn btn-primary btn-sm nav-item">
+                <a class="nav-link p-0" style="color: black">Su</a>
+            </div>
+            <div id="gas" class="btn btn-primary btn-sm nav-item">
+                <a class="nav-link p-0" style="color: black">Doğalgaz</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="list-group">
+        <div id="electricList">
+            @if (Model != null)
+            {
+                @if (Model.ElectricalServices.Count != 0)
+                {
+                    @foreach (var demand in Model.ElectricalServices)
+                    {
+                        <div class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1"><i class="fa fa-user"></i> @demand.FirstName @demand.LastName</h5>
+                                <small>@demand.RegisterDate.ToShortDateString()</small>
+                            </div>
+                            <i class="fa fa-plug text-primary"></i> <span>Elektrik Tesisat Servisi</span>
+
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>Elektrik Tesisat Servisi Bulunmamaktadır.</p>
+                }
+            }
+        </div>
+        <div id="gasList" class="d-none">
+            @if (Model != null)
+            {
+                @if (Model.GasServices.Count != 0)
+                {
+                    @foreach (var demand in Model.GasServices)
+                    {
+                        <div class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1"><i class="fa fa-user"></i> @demand.FirstName @demand.LastName</h5>
+                                <small>@demand.RegisterDate.ToShortDateString()</small>
+                            </div>
+                            <img src="../../fonts/CustomIcons/geyser.svg" style="margin-left: -3px" width="19px" height="19px" class="" /> <span>Doğalgaz Tesisat Servisi</span>
+
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>Doğalgaz Tesisat Servisi Bulunmamaktadır.</p>
+                }
+            }
+        </div>
+        <div id="plumbingList" class="d-none">
+            @if (Model != null)
+            {
+                @if (Model.PlumbingServices.Count != 0)
+                {
+                    @foreach (var demand in Model.PlumbingServices)
+                    {
+                        <div class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1"><i class="fa fa-user"></i> @demand.FirstName @demand.LastName</h5>
+                                <small>@demand.RegisterDate.ToShortDateString()</small>
+                            </div>
+                            <img src="../../fonts/CustomIcons/water.svg" style="margin-left: -3px" width="18px" height="16px" /> <span>Su Tesisat Servisi</span>
+
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>Su Tesisat Servisi Bulunmamaktadır.</p>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#electric").on("click",
+        function() {
+            if (!$(this).hasClass("active")) {
+                $(this).addClass("active");
+                $("#gasList").addClass("d-none");
+                $("#plumbingList").addClass("d-none");
+                $("#gas").removeClass("active");
+                $("#plumbing").removeClass("active");
+                $("#electricList").removeClass("d-none");
+            }
+        });
+
+    $("#gas").on("click",
+        function() {
+            if (!$(this).hasClass("active")) {
+                $(this).addClass("active");
+                $("#electricList").addClass("d-none");
+                $("#plumbingList").addClass("d-none");
+                $("#electric").removeClass("active");
+                $("#plumbing").removeClass("active");
+                $("#gasList").removeClass("d-none");
+            }
+        });
+
+    $("#plumbing").on("click",
+        function() {
+            if (!$(this).hasClass("active")) {
+                $(this).addClass("active");
+                $("#electricList").addClass("d-none");
+                $("#gasList").addClass("d-none");
+                $("#electric").removeClass("active");
+                $("#gas").removeClass("active");
+                $("#plumbingList").removeClass("d-none");
+            }
+        });
+</script>

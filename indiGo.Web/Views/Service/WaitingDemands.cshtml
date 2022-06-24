@@ -1,0 +1,84 @@
+﻿@model List<ServiceDemandViewModel>
+
+<div class="col-lg-8 pb-5 pl-lg-5 offset-lg-2 mt-5">
+    <h3 class="pb-4">Bekleyen İşler</h3>
+    <div class="list-group">
+        @if (Model != null)
+        {
+            @if (Model.Count != 0)
+            {
+                @foreach (var demand in Model)
+                {
+                    <form asp-controller="Service" asp-action="TakeJob">
+                        <input name="serviceId" type="hidden" value="@demand.Id" />
+                        <button class="list-group-item list-group-item-action flex-column align-items-start servicesList">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1"><i class="fa fa-user"></i> @demand.FirstName @demand.LastName</h5>
+                                <small>@demand.CreatedAt.ToShortDateString()</small>
+                            </div>
+                            @if (@demand.Category == "electric")
+                            {
+                                <i class="fa fa-plug text-primary"></i>
+                                <span>Elektrik Tesisatı</span>
+                            }
+                            else if (@demand.Category == "gas")
+                            {
+                                <img src="../../fonts/CustomIcons/geyser.svg" style="margin-left: -3px" width="19px" height="19px" class=""/>
+                                <span>Doğalgaz Tesisatı</span>
+                            }
+                            else if (@demand.Category == "plumbing")
+                            {
+                                <img src="../../fonts/CustomIcons/water.svg" style="margin-left: -3px" width="18px" height="16px"/>
+                                <span>Su Tesisatı</span>
+                            }
+                            <div>
+                                <i class="fa fa-exclamation d-inline" style="margin-left: 2px; margin-right: 2px"></i>
+                                <p class="d-inline">@demand.Problem</p>
+                            </div>
+                            <div>
+                                <svg class="" width="12px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M168.3 499.2C116.1 435 0 279.4 0 192C0 85.96 85.96 0 192 0C298 0 384 85.96 384 192C384 279.4 267 435 215.7 499.2C203.4 514.5 180.6 514.5 168.3 499.2H168.3zM192 256C227.3 256 256 227.3 256 192C256 156.7 227.3 128 192 128C156.7 128 128 156.7 128 192C128 227.3 156.7 256 192 256z"/></svg>
+                                <span> @demand.Address.Neighborhood Mahallesi, @demand.Address.Street Sokağı/Caddesi, No:@demand.Address.ApartmentNo, Daire:@demand.Address.FlatNo, @demand.Address.District/@demand.Address.City </span>
+                            </div>
+
+                        </button>
+                    </form>
+                }
+            }
+            else
+            {
+                <p>Bekleyen İş Bulunmamaktadır.</p>
+            }
+        }
+
+    </div>
+</div>
+
+<script>
+    $(() => {
+        if ("@TempData["status"]" == "success") {
+            toastr.success("İş başarıyla onaylandı");
+        }else if ("@TempData["status"]" == "fail") {
+            toastr.error("Bir hata oluştu");
+        }
+    });
+
+
+    $(".servicesList").on("click",
+        function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Bu işi kabul etmek istediğine emin misiniz?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#007c77',
+                cancelButtonColor: '#ffc600',
+                confirmButtonText: 'Evet',
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(this).parent().submit();
+                }
+            });;
+        });
+
+</script>

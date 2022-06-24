@@ -1,0 +1,66 @@
+﻿
+<div class="container pt-5">
+    <div class="row align-items-end ">
+        <div class="col-lg-6">
+            <h6 class="text-secondary font-weight-semi-bold text-uppercase mb-3">Servis Talebi Oluştur</h6>
+            <h1 class="section-title mb-3">Hangi alanda servise ihtiyacınız var?</h1>
+        </div>
+    </div>
+    <div class="mb-4 text-secondary font-weight-bold">* Talep oluşturabilmek için profil sayfasından adres eklemiş olmanız gerekmektedir.</div>
+    <div class="row m-0 portfolio-container pb-5">
+        <div class="col-lg-4 col-md-6 col-sm-12 px-2 portfolio-item first">
+            <div class="position-relative overflow-hidden">
+                <div class="portfolio-img">
+                    <img class="../../img-fluid w-100" src="../../img/elektrik.jpg" height="240px" alt="">
+                </div>
+                <div class="portfolio-text bg-primary">
+                    <h4 class="font-weight-bold mb-4">Elektrik Tesisat Servisi</h4>
+                    <div class="d-flex align-items-center justify-content-center">
+                        <a class="btn btn-sm btn-secondary m-1" asp-controller="ServiceDemand" asp-action="ElectricalServiceDemand">
+                            Talep Oluştur
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-12 px-2 portfolio-item second">
+            <div class="position-relative overflow-hidden">
+                <div class="portfolio-img">
+                    <img class="../../img-fluid w-100" src="../../img/dogalgaz.jpg" height="240px" alt="">
+                </div>
+                <div class="portfolio-text bg-primary">
+                    <h4 class="font-weight-bold mb-4">Doğalgaz Tesisat Servisi</h4>
+                    <div class="d-flex align-items-center justify-content-center">
+                        <a class="btn btn-sm btn-secondary m-1" asp-controller="ServiceDemand" asp-action="GasServiceDemand">
+                            Talep Oluştur
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-12 px-2 pb-5 portfolio-item third">
+            <div class="position-relative overflow-hidden">
+                <div class="portfolio-img">
+                    <img class="../../img-fluid w-100" src="../../img/su.jpg" height="240px" alt="">
+                </div>
+                <div class="portfolio-text bg-primary">
+                    <h4 class="font-weight-bold mb-4">Su Tesisat Servisi</h4>
+                    <div class="d-flex align-items-center justify-content-center">
+                        <a class="btn btn-sm btn-secondary m-1" asp-controller="ServiceDemand" asp-action="PlumbingServiceDemand">
+                            Talep Oluştur
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    if ("@TempData["status"]" == "success") {
+        toastr.success("Talep Başarıyla oluşturuldu.");
+    }
+</script>
